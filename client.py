@@ -11,7 +11,7 @@ try:
     port = int(sys.argv[2])
     thisBotIN = sys.argv[3]
 except:
-    print("Please provide command line paramaters in the following order: host, port, botNumber (1-4)")
+    print("Please provide command line paramaters in the following order: host port botNumber (1-4)")
     exit()
 
 #Checking if correct bot nr is provided
@@ -40,7 +40,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             #reply = convo.conversation(initiateAnswer)
             #if reply == "":
             print("sending...")
-            sock.send(b"Hei")
+            sendObj = pickle.dumps(convo.status)
+            sock.send(sendObj)
             print("sent!")
         except KeyboardInterrupt:
             quit()

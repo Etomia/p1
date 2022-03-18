@@ -63,7 +63,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     while clients.__len__() < 4: 
         try:
             conn, addr = sock.accept()
-            print("line 66 : " + str(conn))
+            print("line 66 : " + str(conn) + " " + str(addr))
             thisBot = BotState(conn, addr)
             print("line 68")
             thisStat.reply = "requestInf"
@@ -74,17 +74,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             print("line 74")
             conn.send(toSend)
             print("line 76")
-            state = conn.recv(1024)
-            print("line 78" + state)
-            thisBot.curStat = pickle.loads(state)
-            print("line 80")
+            pickledState = conn.recv(1024)
+            print("line 78")
+            thisBot.curStat = pickle.loads(pickledState)
+            print("line 80 " + thisBot.curStat.botName)
             print(thisBot.curStat.botName + " tried joining the chat!")
             print("line 82")
             for c in clients:
                 if thisBot.curStat.whichBot == c.curStat.whichBot: t = False
 
             clients.append(thisBot)
-        except:
+        except Exception as e:
             print("Error in connecting to client")
     
     print("Everyone is here!")

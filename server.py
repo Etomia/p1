@@ -85,7 +85,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
             clients.append(thisBot)
         except Exception as e:
-            print("Error in connecting to client")
+
+            print("Error in connecting to client" + str(e))
     
     print("Everyone is here!")
 

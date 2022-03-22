@@ -20,6 +20,7 @@ class BotState:
         self.addr = addr
         self.curStat = CurrentStatus()
 
+    accepted = True
     conn = ""
     addr = ""
     curStat = CurrentStatus()
@@ -29,32 +30,12 @@ users = []
 
 thisStat = CurrentStatus()
 
-def addCli(conn, addr):
-    '''for c in clients:
-        if c.conn == conn:
-            return'''
-    thisBot = BotState(conn, addr)
-    thisStat.reply = "requestInf"
-    print("sending " + conn +" : "+ thisStat.reply)
-
-    conn.send(pickle.dumps(thisStat).encode())
-
-    thisBot.curStat = pickle.loads(conn.recv(1024).decode())
-
-    print(thisBot.curStat.botName + " tried joining the chat!")
-
-    for c in clients:
-        if thisBot.curStat.whichBot == c.curStat.whichBot: return
-
-    clients.append(thisBot)
-
 #getting command line paramaters
 try:
     port = int(sys.argv[1])
 except:
     print("Please provide command line paramater: port")
     exit()
-
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     sock.bind(("127.0.0.1", port))
@@ -63,29 +44,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     while clients.__len__() < 4: 
         try:
             conn, addr = sock.accept()
-            print("line 66 : " + str(conn) + " " + str(addr))
+            
             thisBot = BotState(conn, addr)
-            print("line 68")
+            
             thisStat.reply = "requestInf"
-            print("line 70")
-            #print("sending " + conn +" : "+ thisStat.reply)
-            print("line 72")
+            
             toSend = pickle.dumps(thisStat)
-            print("line 74")
+            
             conn.send(toSend)
-            print("line 76")
+            
             pickledState = conn.recv(1024)
-            print("line 78")
+            
             thisBot.curStat = pickle.loads(pickledState)
-            print("line 80 " + thisBot.curStat.botName)
+            
             print(thisBot.curStat.botName + " tried joining the chat!")
-            print("line 82")
+            
             for c in clients:
-                if thisBot.curStat.whichBot == c.curStat.whichBot: t = False
+                if thisBot.curStat.whichBot == c.curStat.whichBot:
+                    thisBot.accepted = False
+                    #conn.send(pickle.dumps(thisStat))
+                    break
 
-            clients.append(thisBot)
+            if not thisBot.accepted:
+                print(thisBot.curStat.botName + " is already connected, terminating connection to client.")
+                conn.send(b"badBot")
+            else:   
+                clients.append(thisBot)
+                conn.send(b"goodBot")
+                print(thisBot.curStat.botName + " has joined the chat!")
+
         except Exception as e:
-
             print("Error in connecting to client" + str(e))
     
     print("Everyone is here!")

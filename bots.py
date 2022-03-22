@@ -54,27 +54,16 @@ class Bots:
 
         self.lastPerson = ""
 
-        '''self.bot1Name = "Helena"
-        self.bot2Name = "Tobias"
-        self.bot3Name = "Olivia"
-        self.bot4Name = "Tom"'''
-
         self.otherBotsLike = [True, True, True, True]
-        
-        '''self.bot1Likes = True
-        self.bot2Likes = True
-        self.bot3Likes = True
-        self.bot4Likes = True'''
 
         self.status = CurrentStatus(whichbot)
         pass
-
 
     def conversation(self, inputS):
         inp = pickle.loads(inputS)
 
         if inp.reply == "": 
-            return ""
+            return b"0"
 
         inputWords = inp.reply.split()
 
